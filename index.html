@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Plann3r predicts pixel-level planning costs grounded in 3D scene geometry.">
+  <meta name="keywords" content="Plann3r, robot navigation, planning costs, 3D geometry">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Plann3r: Predicting Planning Costs Grounded in 3D</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Plann3r: Predicting Planning Costs Grounded in 3D</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Planning paths or trajectories for robot navigation requires understanding scene geometry
+            and traversability. Classic approaches relied on accurate 3D maps to define occupancy
+            based planning costs. Learning based methods predict planning costs either in terms of
+            distance to goal or temporal distance between images. However, the former overfits to
+            scene layout and the latter lacks geometric understanding. Moreover, these methods
+            decouple planning and control by estimating scalar cost per image to rank actionable
+            subgoals. In this paper, we propose Plann3r as a 3D grounded method to predict
+            pixel-level planning cost for any given set of images with an arbitrary subgoal pixel.
+            The resulting dense costmaps then directly condition a learnt control policy. We show
+            that Plann3r outperforms search-based planning baselines that rely on explicit
+            connectivity to obtain costmaps. Furthermore, we show that our predicted
+            costmap-conditioned controller improves success rate across different navigation tasks.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
