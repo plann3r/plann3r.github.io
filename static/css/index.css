@@ -1,5 +1,7 @@
 body {
   font-family: 'Noto Sans', sans-serif;
+  background-color: #eef0f3;
+  color: #1f2733;
 }
 
 .footer .icon-link {
@@ -123,4 +125,320 @@ body {
 
 #interpolation-image-wrapper img {
   border-radius: 5px;
+}
+
+/* ============================================================
+   Plann3r project page custom additions
+   ============================================================ */
+
+:root {
+  --plann3r-blue: #3b6fd4;
+  --plann3r-blue-dark: #2451a6;
+  --plann3r-ink: #1f2733;
+  --plann3r-page: #eef0f3;
+}
+
+/* Keep Bulma sections transparent so the gray page tint shows through;
+   cards and tables stay white for contrast. */
+.hero,
+.section,
+.footer {
+  background-color: transparent;
+}
+
+.hero {
+  background: linear-gradient(180deg, #f7f8fa 0%, #eef0f3 100%);
+}
+
+.hero.is-light .hero-body {
+  padding-top: 3rem;
+  padding-bottom: 2rem;
+}
+
+/* Placeholder links for assets that are not published yet. */
+.button-soon {
+  background-color: #d7dbe2;
+  color: #6b7280;
+  border-color: #d7dbe2;
+  cursor: not-allowed;
+  pointer-events: none;
+  box-shadow: none;
+}
+.button-soon .icon {
+  color: #93a0b3;
+}
+
+.publication-title {
+  line-height: 1.15;
+}
+
+.title-gradient {
+  background: linear-gradient(90deg, #2451a6 0%, #3b6fd4 45%, #5aa0e0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle-tagline {
+  color: #4a5568;
+  font-family: 'Google Sans', sans-serif;
+}
+
+.is-anonymized {
+  color: #888;
+  font-style: italic;
+}
+
+/* Buttons row */
+.publication-links .button {
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.publication-links .button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
+}
+
+/* Rounded media */
+.rounded-media,
+.figure-card img,
+.teaser-video video {
+  border-radius: 12px;
+}
+
+.teaser-video {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+}
+.teaser-video video {
+  display: block;
+  width: 100%;
+}
+
+/* Section headers */
+.section-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--plann3r-blue);
+  margin-bottom: 0.35rem;
+}
+
+/* Figure cards */
+.figure-card {
+  background: #fff;
+  border: 1px solid #e7ebf1;
+  border-radius: 14px;
+  padding: 1rem 1rem 0.75rem;
+  box-shadow: 0 4px 16px rgba(20, 40, 90, 0.06);
+}
+.figure-card img {
+  width: 100%;
+  display: block;
+}
+.figure-card .figure-caption,
+.video-card .figure-caption {
+  font-size: 0.92rem;
+  color: #4a5568;
+  margin-top: 0.6rem;
+  text-align: left;
+}
+
+/* Demo video grid */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+@media screen and (max-width: 768px) {
+  .video-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.video-card {
+  background: #fff;
+  border: 1px solid #e7ebf1;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(20, 40, 90, 0.06);
+  display: flex;
+  flex-direction: column;
+}
+.video-card video {
+  width: 100%;
+  display: block;
+  background: #0b0d12;
+}
+.video-card .video-meta {
+  padding: 0.8rem 1rem 1rem;
+}
+.video-card .video-meta h4 {
+  font-family: 'Google Sans', sans-serif;
+  font-weight: 700;
+  color: var(--plann3r-ink);
+  margin-bottom: 0.2rem;
+}
+.video-card .video-meta p {
+  font-size: 0.9rem;
+  color: #5a6573;
+}
+.video-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--plann3r-blue-dark);
+  background: #e8f0ff;
+  border-radius: 6px;
+  padding: 0.15rem 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Results tables */
+.table-wrap {
+  overflow-x: auto;
+  border-radius: 12px;
+}
+table.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  background: #fff;
+  font-variant-numeric: tabular-nums;
+}
+table.results-table th,
+table.results-table td {
+  padding: 0.5rem 0.7rem;
+  text-align: center;
+  white-space: nowrap;
+}
+table.results-table thead th {
+  border-bottom: 2px solid #cdd6e4;
+  color: var(--plann3r-ink);
+  font-family: 'Google Sans', sans-serif;
+}
+table.results-table tbody td:first-child,
+table.results-table tbody th:first-child {
+  text-align: left;
+  font-weight: 600;
+}
+table.results-table tbody tr + tr td {
+  border-top: 1px solid #eef1f6;
+}
+table.results-table .group-sep {
+  border-left: 1px solid #e2e7f0;
+}
+table.results-table .row-ours {
+  background: #eef4ff;
+}
+table.results-table .row-ours td:first-child {
+  color: var(--plann3r-blue-dark);
+}
+table.results-table .best {
+  font-weight: 800;
+  color: var(--plann3r-blue-dark);
+}
+table.results-table .rule-top td {
+  border-top: 2px solid #cdd6e4 !important;
+}
+.table-note {
+  font-size: 0.82rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+  text-align: left;
+}
+
+/* Interactive demo placeholder */
+.demo-panel {
+  background: linear-gradient(160deg, #f4f8ff 0%, #eef2fb 100%);
+  border: 1px dashed #b7c6e6;
+  border-radius: 16px;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+}
+.demo-panel .demo-icon {
+  font-size: 2.4rem;
+  color: var(--plann3r-blue);
+  margin-bottom: 0.6rem;
+}
+.demo-panel h3 {
+  font-family: 'Google Sans', sans-serif;
+  font-weight: 700;
+  color: var(--plann3r-ink);
+  margin-bottom: 0.4rem;
+}
+.demo-panel p {
+  color: #5a6573;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.demo-badge {
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--plann3r-blue);
+  border-radius: 999px;
+  padding: 0.25rem 0.8rem;
+}
+#demo-app {
+  margin-top: 1.5rem;
+}
+
+/* Method step pills */
+.phase-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+@media screen and (max-width: 768px) {
+  .phase-cards { grid-template-columns: 1fr; }
+}
+.phase-card {
+  background: #fff;
+  border: 1px solid #e7ebf1;
+  border-radius: 14px;
+  padding: 1.25rem 1.35rem;
+  box-shadow: 0 4px 16px rgba(20, 40, 90, 0.06);
+  text-align: left;
+}
+.phase-card .phase-kicker {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--plann3r-blue);
+}
+.phase-card h4 {
+  font-family: 'Google Sans', sans-serif;
+  font-weight: 700;
+  color: var(--plann3r-ink);
+  margin: 0.15rem 0 0.4rem;
+  font-size: 1.05rem;
+}
+.phase-card p {
+  font-size: 0.92rem;
+  color: #5a6573;
+}
+
+/* BibTeX */
+pre.bibtex {
+  background: #0f1320;
+  color: #e6eaf2;
+  border-radius: 12px;
+  padding: 1.25rem 1.4rem;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.contrib-list li {
+  margin-bottom: 0.5rem;
 }

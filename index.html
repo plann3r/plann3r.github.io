@@ -1,17 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="description"
-        content="Plann3r predicts pixel-level planning costs grounded in 3D scene geometry.">
-  <meta name="keywords" content="Plann3r, robot navigation, planning costs, 3D geometry">
+        content="Plann3r predicts dense pixel-level geodesic planning costs grounded in 3D scene geometry, and integrates them into the VGGT-Nav visual navigation pipeline.">
+  <meta name="keywords" content="Plann3r, VGGT-Nav, robot navigation, planning costs, geodesic, costmap, VGGT, 3D geometry">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Plann3r: Predicting Planning Costs Grounded in 3D</title>
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Plann3r: Predicting Planning Costs Grounded in 3D">
+  <meta property="og:description" content="Dense pixel-level geodesic planning costs that directly condition a learnt control policy for visual navigation.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="./static/images/poster_execution.jpg">
 
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
         rel="stylesheet">
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.1/css/academicons.min.css">
   <link rel="stylesheet" href="./static/css/index.css">
 </head>
 <body>
@@ -21,14 +29,56 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title">Plann3r: Predicting Planning Costs Grounded in 3D</h1>
+          <h1 class="title is-1 publication-title">
+            <span class="title-gradient">Plann3r</span>: Predicting Planning Costs Grounded in 3D
+          </h1>
+
+          <!-- Authors: paper is under anonymous review; update for camera-ready. -->
+          <div class="is-size-5 publication-authors" style="margin-top: 1.25rem;">
+            <span class="author-block is-anonymized">Anonymous Authors</span>
+          </div>
+          <div class="is-size-6 publication-venue" style="margin: 0.6rem auto 0;">
+            Under review at CoRL 2026
+          </div>
+
+          <!-- Links -->
+          <div class="column has-text-centered" style="margin-top: 1.4rem;">
+            <div class="publication-links">
+              <!-- TODO: link the arXiv preprint once it is posted. -->
+              <span class="link-block">
+                <a class="button is-rounded is-medium button-soon" aria-disabled="true" title="Not available yet">
+                  <span class="icon"><i class="ai ai-arxiv"></i></span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- TODO: link the public code repository once it is released. -->
+              <span class="link-block">
+                <a class="button is-rounded is-medium button-soon" aria-disabled="true" title="Not available yet">
+                  <span class="icon"><i class="fab fa-github"></i></span>
+                  <span>Code (coming soon)</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#demos" class="button is-dark is-rounded is-medium">
+                  <span class="icon"><i class="fas fa-video"></i></span>
+                  <span>Real World Demos</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#demo" class="button is-link is-rounded is-medium">
+                  <span>Demo</span>
+                </a>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="section">
+<!-- ============================ ABSTRACT ============================ -->
+<section class="section" style="padding-top: 1.5rem;">
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
@@ -36,17 +86,19 @@
         <div class="content has-text-justified">
           <p>
             Planning paths or trajectories for robot navigation requires understanding scene geometry
-            and traversability. Classic approaches relied on accurate 3D maps to define occupancy
-            based planning costs. Learning based methods predict planning costs either in terms of
-            distance to goal or temporal distance between images. However, the former overfits to
-            scene layout and the latter lacks geometric understanding. Moreover, these methods
-            decouple planning and control by estimating scalar cost per image to rank actionable
-            subgoals. In this paper, we propose Plann3r as a 3D grounded method to predict
-            pixel-level planning cost for any given set of images with an arbitrary subgoal pixel.
-            The resulting dense costmaps then directly condition a learnt control policy. We show
-            that Plann3r outperforms search-based planning baselines that rely on explicit
-            connectivity to obtain costmaps. Furthermore, we show that our predicted
-            costmap-conditioned controller improves success rate across different navigation tasks.
+            and traversability. Classic approaches relied on accurate 3D maps to define occupancy-based
+            planning costs. Learning-based alternatives predict planning costs either in terms of
+            distance to goal or temporal distance between images. The former overfits to scene layout
+            and the latter lacks geometric understanding. Most of these methods estimate
+            <em>image-level</em> scalar costs, which are not sufficient to guide the robot. We propose
+            Plann3r, a 3D-grounded method that predicts <em>pixel-level</em> planning costs in terms of
+            geodesic distances for any given set of images with an arbitrary subgoal pixel. We integrate
+            Plann3r within a navigation pipeline, VGGT-Nav, in two ways. The offline mapping cum
+            global-planning phase iteratively uses Plann3r to generate subgoals and reference-image
+            global costmaps. In the execution phase, Plann3r performs simultaneous localization and
+            local planning to generate planning costmaps that directly condition a learnt control
+            policy. Plann3r and VGGT-Nav outperform baselines on the planning and navigation tasks of an
+            existing benchmark, and we show real-world demonstrations of sim-to-real deployment.
           </p>
         </div>
       </div>
@@ -54,5 +106,405 @@
   </div>
 </section>
 
+<!-- ============================ CONTRIBUTIONS ============================ -->
+<section class="section" style="padding-top: 0;">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <p class="section-eyebrow has-text-centered">Key ideas</p>
+        <h2 class="title is-3 has-text-centered">What's new</h2>
+        <div class="content">
+          <ul class="contrib-list">
+            <li>
+              <strong>Plann3r</strong> predicts planning costs as pixel-level geodesic distances from a
+              query image to an arbitrary subgoal pixel within a submap. It uses a pre-trained VGGT
+              backbone with a learnable goal token and a lightweight MLP cost decoder.
+            </li>
+            <li>
+              <strong>VGGT-Nav</strong> is a single-camera visual navigation pipeline with a 3D-grounded
+              backend for mapping, localization, and planning. It improves control prediction and
+              navigation success rates across the four benchmark tasks.
+            </li>
+            <li>
+              <strong>Simultaneous localization and planning</strong>. The query costmap arises from
+              query-to-submap cross-attention, which removes the need for explicit pairwise feature
+              matching that is more prone to failure.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ METHOD ============================ -->
+<section class="section" style="padding-top: 0;">
+  <div class="container is-max-desktop">
+    <p class="section-eyebrow has-text-centered">Method</p>
+    <h2 class="title is-3 has-text-centered">Plann3r architecture</h2>
+    <div class="columns is-centered">
+      <div class="column">
+        <div class="figure-card">
+          <img src="./static/images/architecture.png"
+               alt="Plann3r architecture: VGGT backbone, goal token, and MLP cost decoder.">
+          <p class="figure-caption">
+            Plann3r builds on a pre-trained VGGT model, fine-tuned to predict geometrically consistent
+            planning costs as geodesic distances from an image pixel to a (sub)goal pixel within a submap
+            of images. A learnable goal token designates the subgoal, and a custom MLP head projects each
+            patch embedding to a scalar cost to produce a coarse H/P x W/P costmap.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="title is-3 has-text-centered" style="margin-top: 2.5rem;">The VGGT-Nav pipeline</h2>
+    <div class="columns is-centered">
+      <div class="column">
+        <div class="figure-card">
+          <img src="./static/images/pipeline.png"
+               alt="VGGT-Nav pipeline: offline mapping/global planning and online localization/local planning.">
+          <p class="figure-caption">
+            The same Plann3r module runs iteratively in two modes. Offline, it walks backward through
+            overlapping submaps and propagates low-cost connectors from the goal through the reference
+            traverse, which produces precomputed reference costmaps. Online, the robot localizes from a
+            monocular RGB frame, retrieves a local submap, predicts a query costmap, and converts it into
+            egocentric waypoints for the controller.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-cards">
+      <div class="phase-card">
+        <div class="phase-kicker">Offline: mapping and global planning</div>
+        <h4>Functional map of costs</h4>
+        <p>
+          From the goal pixel, Plann3r predicts local costmaps over overlapping submaps and recursively
+          back-propagates a cost-to-go offset through the traverse. The map stores each pixel's planning
+          cost toward the goal directly, instead of geometry or a graph.
+        </p>
+      </div>
+      <div class="phase-card">
+        <div class="phase-kicker">Online: localization and local planning</div>
+        <h4>Cost-conditioned control</h4>
+        <p>
+          The query image, submap, and a subgoal pixel pass through Plann3r together. Global attention
+          localizes the query against the submap and the MLP head emits a dense query costmap. A learnt
+          controller (inherited from ObjectReact) turns this costmap into 5 future BEV waypoints.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ COSTMAPS QUALITATIVE ============================ -->
+<section class="section" style="padding-top: 0;">
+  <div class="container is-max-desktop">
+    <p class="section-eyebrow has-text-centered">Why geodesic</p>
+    <h2 class="title is-3 has-text-centered">Dense geodesic costmaps</h2>
+    <div class="columns is-centered">
+      <div class="column">
+        <div class="content has-text-justified" style="max-width: 880px; margin: 0 auto 1.25rem;">
+          <p>
+            Blue regions are cheap because they sit on navigable space; red regions become expensive when
+            the robot must route around walls, furniture, or missing connectivity. The cost is geodesic
+            rather than Euclidean image distance, so it reflects what the robot can actually reach. When
+            the goal is outside the room, the near side of the wall correctly receives a high cost in both
+            the ground-truth and Plann3r costmaps, whereas a 3D-Euclidean baseline assigns it a low cost
+            and ObjectReact misses the gradient.
+          </p>
+        </div>
+        <div class="figure-card">
+          <img src="./static/images/costmap_qual.png"
+               alt="Qualitative comparison of planning costmaps: Ground Truth, Plann3r, Euclidean, ObjectReact.">
+          <p class="figure-caption">
+            Qualitative comparison of planning costmaps. The goal lies outside the room. Plann3r
+            reproduces the ground-truth geodesic structure; 3D-Euclidean distance and ObjectReact do not.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ DEMO ============================ -->
+<section class="section" id="demo" style="padding-top: 0;">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Demo</h2>
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <div class="demo-panel">
+          <span class="demo-badge">Coming soon</span>
+          <div class="demo-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
+          <h3>Interact with the topomap</h3>
+          <p>
+            We are preparing an in-browser demo where you can move along the reference topomap and inspect
+            the predicted geodesic costs at each node. Check back shortly.
+          </p>
+          <!-- Mount point wired up by static/js/index.js once the data bundle is provided. -->
+          <div id="demo-app"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ VIDEO DEMOS ============================ -->
+<section class="section" id="demos" style="padding-top: 0;">
+  <div class="container is-max-desktop">
+    <p class="section-eyebrow has-text-centered">Demonstrations</p>
+    <h2 class="title is-3 has-text-centered">Mapping and execution in action</h2>
+    <p class="subtitle is-6 has-text-centered" style="color:#5a6573; margin-bottom: 1.75rem;">
+      Real recordings from the VGGT-Nav pipeline.
+    </p>
+
+    <div class="video-grid">
+      <div class="video-card">
+        <video class="lazy-loop" muted loop playsinline preload="none"
+               poster="./static/images/poster_mapping_alt.jpg">
+          <source src="./static/videos/mapping_alt_goal.mp4" type="video/mp4">
+        </video>
+        <div class="video-meta">
+          <span class="video-tag">Offline mapping</span>
+          <h4>Mapping to an alternate goal</h4>
+          <p>Costs propagate through overlapping local submaps; the global cost field follows the floor plan instead of cutting through obstacles.</p>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <video class="lazy-loop" muted loop playsinline preload="none"
+               poster="./static/images/poster_execution.jpg">
+          <source src="./static/videos/execution_view.mp4" type="video/mp4">
+        </video>
+        <div class="video-meta">
+          <span class="video-tag">Execution view</span>
+          <h4>Query, submap, costmap, and rollout</h4>
+          <p>The live query, retrieved submap, and predicted costmap run alongside the real-world robot rollout toward the alternate goal.</p>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <video class="lazy-loop" muted loop playsinline preload="none"
+               poster="./static/images/poster_mapping_final.jpg">
+          <source src="./static/videos/mapping_final_goal.mp4" type="video/mp4">
+        </video>
+        <div class="video-meta">
+          <span class="video-tag">Offline mapping</span>
+          <h4>Mapping to the final goal</h4>
+          <p>The same functional-map representation transfers to a different target with no change to the module.</p>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <video class="lazy-loop" muted loop playsinline preload="none"
+               poster="./static/images/poster_reach.jpg">
+          <source src="./static/videos/reach_alt_goal.mp4" type="video/mp4">
+        </video>
+        <div class="video-meta">
+          <span class="video-tag">Real-world rollout</span>
+          <h4>Reaching the alternate goal</h4>
+          <p>Closed-loop, cost-conditioned waypoints drive the physical robot to the alternate goal.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ RESULTS ============================ -->
+<section class="section" style="padding-top: 0;">
+  <div class="container is-max-desktop">
+    <p class="section-eyebrow has-text-centered">Results</p>
+    <h2 class="title is-3 has-text-centered">Navigation performance</h2>
+    <div class="columns is-centered">
+      <div class="column">
+        <div class="table-wrap">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th rowspan="2" style="text-align:left;">Method</th>
+                <th colspan="2">Imitate</th>
+                <th colspan="2" class="group-sep">Alt Goal</th>
+                <th colspan="2" class="group-sep">Shortcut</th>
+                <th colspan="2" class="group-sep">Reverse</th>
+                <th colspan="2" class="group-sep"><em>Average</em></th>
+              </tr>
+              <tr>
+                <th>SPL</th><th>SSPL</th>
+                <th class="group-sep">SPL</th><th>SSPL</th>
+                <th class="group-sep">SPL</th><th>SSPL</th>
+                <th class="group-sep">SPL</th><th>SSPL</th>
+                <th class="group-sep">SPL</th><th>SSPL</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>GNM</td>
+                <td>78.79</td><td>82.95</td>
+                <td class="group-sep">8.70</td><td>15.44</td>
+                <td class="group-sep">15.38</td><td>31.74</td>
+                <td class="group-sep">3.33</td><td>6.11</td>
+                <td class="group-sep">26.55</td><td>34.56</td>
+              </tr>
+              <tr>
+                <td>GNM (HM3D)</td>
+                <td class="best">81.82</td><td>86.38</td>
+                <td class="group-sep">0.00</td><td>10.91</td>
+                <td class="group-sep">15.38</td><td>24.57</td>
+                <td class="group-sep">13.28</td><td>20.77</td>
+                <td class="group-sep">27.62</td><td>35.66</td>
+              </tr>
+              <tr>
+                <td>PixNav</td>
+                <td>42.42</td><td>46.75</td>
+                <td class="group-sep">26.09</td><td>31.66</td>
+                <td class="group-sep">7.69</td><td>22.29</td>
+                <td class="group-sep">16.16</td><td>25.56</td>
+                <td class="group-sep">23.09</td><td>31.57</td>
+              </tr>
+              <tr>
+                <td>RoboHop</td>
+                <td>57.56</td><td>64.99</td>
+                <td class="group-sep">30.43</td><td>38.23</td>
+                <td class="group-sep">30.77</td><td>40.87</td>
+                <td class="group-sep">9.98</td><td>16.92</td>
+                <td class="group-sep">32.19</td><td>40.25</td>
+              </tr>
+              <tr>
+                <td>ObjectReact</td>
+                <td>60.60</td><td>68.51</td>
+                <td class="group-sep">21.74</td><td>26.68</td>
+                <td class="group-sep">23.08</td><td>39.64</td>
+                <td class="group-sep best">30.00</td><td class="best">42.01</td>
+                <td class="group-sep">33.36</td><td>44.71</td>
+              </tr>
+              <tr class="row-ours rule-top">
+                <td>GT Costs + Control (Ours)</td>
+                <td>64.24</td><td>81.76</td>
+                <td class="group-sep best">61.15</td><td>67.36</td>
+                <td class="group-sep">30.67</td><td>44.20</td>
+                <td class="group-sep">9.12</td><td>28.81</td>
+                <td class="group-sep">41.29</td><td>55.53</td>
+              </tr>
+              <tr class="row-ours">
+                <td>Plann3r + Control (Ours)</td>
+                <td>78.67</td><td class="best">89.71</td>
+                <td class="group-sep">58.98</td><td class="best">67.43</td>
+                <td class="group-sep best">45.10</td><td class="best">65.83</td>
+                <td class="group-sep">9.20</td><td>22.34</td>
+                <td class="group-sep best">47.98</td><td class="best">61.32</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note">
+          State-of-the-art comparison on four navigation tasks (HM3D / IIN-val). We report SPL and
+          Soft-SPL. Boldface marks the best score per column; the two shaded rows are ours. Plann3r
+          conditions control on dense predicted geodesic costmaps and reaches the best average SPL and
+          SSPL, along with the best scores on Alt Goal and Shortcut. The GT-cost ablation shows that most
+          of the remaining gap is in control and subgoal selection rather than cost prediction.
+        </p>
+      </div>
+    </div>
+
+    <h2 class="title is-3 has-text-centered" style="margin-top: 2.75rem;">Costmap quality</h2>
+    <div class="columns is-centered">
+      <div class="column">
+        <div class="table-wrap">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th rowspan="2" style="text-align:left;">Costmap Source</th>
+                <th colspan="5">All Pixels Below Threshold</th>
+                <th colspan="5" class="group-sep">Within Cost Range</th>
+              </tr>
+              <tr>
+                <th>5%</th><th>15%</th><th>30%</th><th>50%</th><th>100%</th>
+                <th class="group-sep">0-5%</th><th>5-15%</th><th>15-30%</th><th>30-50%</th><th>50-100%</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Euclidean Distance</td>
+                <td class="best">2.284</td><td>2.533</td><td>2.617</td><td>2.561</td><td>2.232</td>
+                <td class="group-sep best">2.236</td><td>2.403</td><td>2.412</td><td>2.296</td><td>2.645</td>
+              </tr>
+              <tr>
+                <td>ObjectReact</td>
+                <td>3.650</td><td>3.600</td><td>3.483</td><td>3.260</td><td>2.837</td>
+                <td class="group-sep">3.731</td><td>3.312</td><td>2.975</td><td>2.619</td><td>3.304</td>
+              </tr>
+              <tr class="row-ours">
+                <td>Plann3r (Ours)</td>
+                <td>2.398</td><td class="best">2.424</td><td class="best">2.369</td><td class="best">2.299</td><td class="best">1.986</td>
+                <td class="group-sep">2.387</td><td class="best">2.262</td><td class="best">2.091</td><td class="best">2.043</td><td class="best">2.318</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note">
+          Mean Absolute Rank Difference (MARD) between ground-truth and predicted costs (lower is better).
+          Euclidean distance is most accurate only in the immediate low-cost region around the subgoal;
+          Plann3r is consistently better once reasoning extends beyond nearby space.
+        </p>
+      </div>
+    </div>
+
+    <h2 class="title is-3 has-text-centered" style="margin-top: 2.75rem;">Qualitative navigation overview</h2>
+    <div class="columns is-centered">
+      <div class="column">
+        <div class="figure-card">
+          <img src="./static/images/qualnav.png"
+               alt="Qualitative overview of the navigation pipeline: submap and query costmaps, subgoal/goal pixels, predicted waypoints, and a top-down view.">
+          <p class="figure-caption">
+            Qualitative overview of the navigation pipeline. The query costmaps remain geodesically
+            consistent with the submap costmaps and correctly direct the robot at both timesteps,
+            regardless of whether the final goal is visible in the current image.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ BIBTEX ============================ -->
+<section class="section" id="bibtex" style="padding-top: 0;">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <h2 class="title is-3" style="margin-bottom: 0;">BibTeX</h2>
+          <button id="copy-bibtex" class="button is-small is-rounded is-light">Copy</button>
+        </div>
+        <pre class="bibtex" style="margin-top: 1rem;"><code id="bibtex-text">@inproceedings{plann3r2026,
+  title     = {Plann3r: Predicting Planning Costs Grounded in 3D},
+  author    = {Anonymous Authors},
+  booktitle = {Under review at the Conference on Robot Learning (CoRL)},
+  year      = {2026},
+  note      = {Project page: https://plann3r.github.io/}
+}</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content has-text-centered">
+          <p>
+            Website template borrowed from
+            <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>, released under a
+            <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons
+            Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="./static/js/index.js"></script>
 </body>
 </html>
