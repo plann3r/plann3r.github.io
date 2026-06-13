@@ -230,20 +230,61 @@
 <!-- ============================ DEMO ============================ -->
 <section class="section" id="demo" style="padding-top: 0;">
   <div class="container is-max-desktop">
+    <p class="section-eyebrow has-text-centered">Try it</p>
     <h2 class="title is-3 has-text-centered">Demo</h2>
+    <p class="subtitle is-6 has-text-centered" style="color:#5a6573; max-width: 760px; margin: 0 auto 1.5rem;">
+      Pick a scene and goal, then scrub the traverse to see Plann3r's predicted geodesic costmap per
+      frame. Blue is cheap to reach the goal, red is expensive. We also ran the same model on Sekiro, video game it never saw during training, with no fine-tuning, which shows the planner generalizes beyond its indoor training scenes.
+    </p>
+
     <div class="columns is-centered">
       <div class="column is-four-fifths">
-        <div class="demo-panel">
-          <span class="demo-badge">Coming soon</span>
-          <div class="demo-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
-          <h3>Interact with the topomap</h3>
-          <p>
-            We are preparing an in-browser demo where you can move along the reference topomap and inspect
-            the predicted geodesic costs at each node. Check back shortly.
-          </p>
-          <!-- Mount point wired up by static/js/index.js once the data bundle is provided. -->
-          <div id="demo-app"></div>
+        <div class="demo-viewer" id="demo-viewer">
+          <div class="demo-toolbar">
+            <div class="demo-ctl">
+              <span class="demo-ctl-label">Scene</span>
+              <div class="demo-segment" id="demo-scenes"></div>
+            </div>
+            <div class="demo-ctl">
+              <span class="demo-ctl-label">Goal</span>
+              <div class="demo-segment" id="demo-goals"></div>
+            </div>
+            <div class="demo-ctl">
+              <span class="demo-ctl-label">Normalize</span>
+              <div class="demo-segment" id="demo-modes">
+                <button class="demo-seg-btn" data-mode="global">Global</button>
+                <button class="demo-seg-btn" data-mode="relative">Relative</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="demo-stage">
+            <canvas id="demo-canvas" width="640" height="480"></canvas>
+          </div>
+
+          <div class="demo-strip-wrap">
+            <div class="demo-strip-label">Cost to goal along the traverse</div>
+            <canvas id="demo-strip" height="28"></canvas>
+          </div>
+
+          <div class="demo-controls">
+            <button id="demo-play" class="button is-small is-dark is-rounded">Play</button>
+            <input type="range" id="demo-frame" min="0" max="105" value="0" class="demo-range">
+            <span id="demo-readout" class="demo-readout"></span>
+            <label class="demo-opacity-label">
+              Overlay
+              <input type="range" id="demo-opacity" min="0" max="100" value="60">
+            </label>
+          </div>
+
+          <p class="demo-loading" id="demo-loading">Loading demo data...</p>
         </div>
+        <p class="table-note" style="text-align:center;">
+          Each goal is a pixel selected in one reference frame (white-and-red marker). The costmaps come
+          straight from Plann3r's offline propagation pass over this scene. Global normalizes color across
+          the whole traverse (absolute cost to goal); relative normalizes each frame on its own, which
+          brings out local structure even far from the goal.
+        </p>
       </div>
     </div>
   </div>
@@ -506,5 +547,8 @@
 </footer>
 
 <script src="./static/js/index.js"></script>
+<script src="./static/demo/Dd4bFSTQ8gi/scene.js"></script>
+<script src="./static/demo/sekiro/scene.js"></script>
+<script src="./static/js/demo.js"></script>
 </body>
 </html>

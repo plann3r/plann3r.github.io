@@ -391,6 +391,127 @@ table.results-table .rule-top td {
   margin-top: 1.5rem;
 }
 
+/* Interactive topomap viewer */
+.demo-viewer {
+  background: #fff;
+  border: 1px solid #e7ebf1;
+  border-radius: 16px;
+  padding: 1.25rem 1.25rem 1.4rem;
+  box-shadow: 0 4px 16px rgba(20, 40, 90, 0.06);
+}
+.demo-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 1.5rem 1.75rem;
+  margin: 0 auto 1.5rem;
+}
+.demo-ctl {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.demo-ctl-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #98a1b0;
+}
+.demo-segment {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+}
+.demo-seg-btn {
+  font-family: 'Google Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #374151;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 0.4rem 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+}
+.demo-seg-btn:hover:not(.is-active) {
+  background: #f9fafb;
+}
+.demo-seg-btn.is-active {
+  background: var(--plann3r-blue);
+  border-color: var(--plann3r-blue);
+  color: #fff;
+}
+.demo-stage {
+  display: flex;
+  justify-content: center;
+}
+#demo-canvas {
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 4 / 3;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+  border-radius: 10px;
+  background: #0b0d12;
+  image-rendering: auto;
+}
+.demo-strip-wrap {
+  max-width: 640px;
+  margin: 1rem auto 0;
+}
+.demo-strip-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #8a93a3;
+  margin-bottom: 0.3rem;
+}
+#demo-strip {
+  width: 100%;
+  height: 28px;
+  display: block;
+  border-radius: 6px;
+  cursor: pointer;
+  touch-action: none;
+}
+.demo-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  max-width: 640px;
+  margin: 1rem auto 0;
+  flex-wrap: wrap;
+}
+.demo-range {
+  flex: 1 1 180px;
+}
+.demo-readout {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.85rem;
+  color: #4a5568;
+  min-width: 220px;
+}
+.demo-opacity-label {
+  font-size: 0.8rem;
+  color: #5a6573;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.demo-loading {
+  text-align: center;
+  color: #8a93a3;
+  font-size: 0.9rem;
+  margin-top: 0.9rem;
+}
+
 /* Method step pills */
 .phase-cards {
   display: grid;
