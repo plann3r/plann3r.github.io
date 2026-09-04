@@ -53,6 +53,14 @@ body {
   font-weight: bold;
 }
 
+.publication-venue a {
+  color: hsl(204, 86%, 53%);
+}
+
+.publication-venue a:hover {
+  text-decoration: underline;
+}
+
 .publication-awards {
   color: #ff3860;
   width: fit-content;
