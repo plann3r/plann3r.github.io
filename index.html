@@ -93,19 +93,21 @@
         <div class="content has-text-justified">
           <p>
             Planning paths or trajectories for robot navigation requires understanding scene geometry
-            and traversability. Classic approaches relied on accurate 3D maps to define occupancy-based
-            planning costs. Learning-based alternatives predict planning costs either in terms of
-            distance to goal or temporal distance between images. The former overfits to scene layout
-            and the latter lacks geometric understanding. Most of these methods estimate
-            <em>image-level</em> scalar costs, which are not sufficient to guide the robot. We propose
-            Plann3r, a 3D-grounded method that predicts <em>pixel-level</em> planning costs in terms of
-            geodesic distances for any given set of images with an arbitrary subgoal pixel. We integrate
-            Plann3r within a navigation pipeline, VGGT-Nav, in two ways. The offline mapping cum
-            global-planning phase iteratively uses Plann3r to generate subgoals and reference-image
-            global costmaps. In the execution phase, Plann3r performs simultaneous localization and
-            local planning to generate planning costmaps that directly condition a learnt control
-            policy. Plann3r and VGGT-Nav outperform baselines on the planning and navigation tasks of an
-            existing benchmark, and we show real-world demonstrations of sim-to-real deployment.
+            and traversability. Classic approaches relied on accurate 3D maps to define occupancy based
+            planning costs. Learning based alternatives predict planning costs either in terms of
+            distance to goal or temporal distance between images. However, the former overfits to scene
+            layout and the latter lacks geometric understanding. Moreover, most of these methods estimate
+            image-level scalar costs, which are not sufficiently informative to effectively guide the
+            robot. In this paper, we propose Plann3r as a 3D grounded method to predict pixel-level
+            planning costs in terms of geodesic distances for any given set of images with an arbitrary
+            subgoal pixel. We integrate Plann3r within a navigation pipeline, dubbed VGGT-Nav, in two
+            unique ways: the offline mapping cum global planning phase iteratively uses Plann3r to
+            generate subgoals and reference image global costmaps; and in the execution phase Plann3r
+            performs simultaneous localization and local planning to generate planning costmaps to
+            directly condition a learnt control policy. We show that the proposed Plann3r and VGGT-Nav
+            largely outperform baselines respectively on the planning and navigation tasks on an
+            existing prior-traversal navigation benchmark. We further show real world demonstrations
+            that highlight sim-to-real deployment.
           </p>
         </div>
       </div>
@@ -123,19 +125,20 @@
         <div class="content">
           <ul class="contrib-list">
             <li>
-              <strong>Plann3r</strong> predicts planning costs as pixel-level geodesic distances from a
-              query image to an arbitrary subgoal pixel within a submap. It uses a pre-trained VGGT
-              backbone with a learnable goal token and a lightweight MLP cost decoder.
+              <strong>Plann3r</strong>, a method to predict planning costs in the form of pixel-level
+              geodesic distances for a query image to an arbitrary subgoal pixel given within a submap.
             </li>
             <li>
-              <strong>VGGT-Nav</strong> is a single-camera visual navigation pipeline with a 3D-grounded
-              backend for mapping, localization, and planning. It improves control prediction and
-              navigation success rates across the four benchmark tasks.
+              <strong>VGGT-Nav</strong>, a single-camera visual navigation pipeline that leverages 3D
+              grounded backend for mapping, localization and planning, which enables improved control
+              prediction and navigation success rates across multiple tasks of a prior-traversal
+              (seen-environment) navigation benchmark.
             </li>
             <li>
-              <strong>Simultaneous localization and planning</strong>. The query costmap arises from
-              query-to-submap cross-attention, which removes the need for explicit pairwise feature
-              matching that is more prone to failure.
+              <strong>Simultaneous localization and planning</strong>. Plann3r enables simultaneous
+              mapping/localization and planning as the query costmap is implicitly based on
+              query-to-submap cross-attention; this forgoes the need for explicit pairwise feature
+              matching which is more prone to failures.
             </li>
           </ul>
         </div>
@@ -155,10 +158,9 @@
           <img src="./static/images/architecture.png"
                alt="Plann3r architecture: VGGT backbone, goal token, and MLP cost decoder.">
           <p class="figure-caption">
-            Plann3r builds on a pre-trained VGGT model, fine-tuned to predict geometrically consistent
-            planning costs as geodesic distances from an image pixel to a (sub)goal pixel within a submap
-            of images. A learnable goal token designates the subgoal, and a custom MLP head projects each
-            patch embedding to a scalar cost to produce a coarse H/P x W/P costmap.
+            We build Plann3r on top of a pre-trained VGGT model, fine-tuning it to predict geometrically
+            consistent planning costs in terms of geodesic distances from an image pixel to a (sub)goal
+            pixel given within a submap of images.
           </p>
         </div>
       </div>
@@ -171,11 +173,11 @@
           <img src="./static/images/pipeline.png"
                alt="VGGT-Nav pipeline: offline mapping/global planning and online localization/local planning.">
           <p class="figure-caption">
-            The same Plann3r module runs iteratively in two modes. Offline, it walks backward through
-            overlapping submaps and propagates low-cost connectors from the goal through the reference
-            traverse, which produces precomputed reference costmaps. Online, the robot localizes from a
-            monocular RGB frame, retrieves a local submap, predicts a query costmap, and converts it into
-            egocentric waypoints for the controller.
+            We use the proposed Plann3r, based on VGGT, to predict planning costs in terms of geodesic
+            distances from query image pixels to an arbitrary (sub)goal pixel given within a submap.
+            Plann3r is used iteratively both during the offline mapping cum global planning phase and the
+            online execution phase of localization cum local planning, where the output costmaps from the
+            latter are used to predict egocentric trajectory.
           </p>
         </div>
       </div>
@@ -186,19 +188,76 @@
         <div class="phase-kicker">Offline: mapping and global planning</div>
         <h4>Functional map of costs</h4>
         <p>
-          From the goal pixel, Plann3r predicts local costmaps over overlapping submaps and recursively
-          back-propagates a cost-to-go offset through the traverse. The map stores each pixel's planning
-          cost toward the goal directly, instead of geometry or a graph.
+          Plann3r predicts local planning costs on a submap around the goal image. The lowest-cost
+          patch of the image shared with the next submap is the next subgoal, and its cost is added
+          as an offset to the next window. Repeating this back to the start gives every reference
+          image a costmap of global planning costs to the goal, without a 3D occupancy grid or a
+          topological graph.
         </p>
       </div>
       <div class="phase-card">
         <div class="phase-kicker">Online: localization and local planning</div>
         <h4>Cost-conditioned control</h4>
         <p>
-          The query image, submap, and a subgoal pixel pass through Plann3r together. Global attention
-          localizes the query against the submap and the MLP head emits a dense query costmap. A learnt
-          controller (inherited from ObjectReact) turns this costmap into 5 future BEV waypoints.
+          The robot retrieves a submap of 8 reference images, and the subgoal pixel is the minimum cost
+          in their precomputed costmaps. Plann3r takes the query image, the submap and the subgoal
+          together, so its global attention localizes the query without explicit feature matching. A
+          controller with the architecture and training of ObjectReact turns the query costmap into 5
+          future waypoints in the local BEV space.
         </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ ANIMATIONS ============================ -->
+<section class="section" id="animations" style="padding-top: 0;">
+  <div class="container is-max-desktop">
+    <p class="section-eyebrow has-text-centered">Walkthrough</p>
+    <h2 class="title is-3 has-text-centered">VGGT-Nav, step by step</h2>
+    <p class="subtitle is-6 has-text-centered" style="color:#5a6573; max-width: 760px; margin: 0 auto 1.5rem;">
+      Two HM3D validation episodes, rendered from the logged runs. Poses, images, costmaps and paths
+      come from the logs. The 3D mesh is only for visualization, since Plann3r works on the
+      reference images in a sliding window.
+    </p>
+
+    <div class="video-grid" style="grid-template-columns: 1fr;">
+      <div class="video-card">
+        <video controls playsinline preload="none" poster="./static/images/poster_scene_a.jpg">
+          <source src="./static/videos/scene_a_1080p.mp4" type="video/mp4">
+        </video>
+        <div class="video-meta">
+          <span class="video-tag">Scene A</span>
+          <h4>Goal: chair, alternate goal: refrigerator</h4>
+          <div class="video-chapters">
+            <button class="chapter-btn" data-time="0"><span class="chapter-time">0:00</span>Mapping</button>
+            <button class="chapter-btn" data-time="6.5"><span class="chapter-time">0:06</span>Goal</button>
+            <button class="chapter-btn" data-time="11.5"><span class="chapter-time">0:11</span>Mapping and planning</button>
+            <button class="chapter-btn" data-time="43"><span class="chapter-time">0:43</span>Localization and planning</button>
+            <button class="chapter-btn" data-time="57.5"><span class="chapter-time">0:57</span>Alt goal</button>
+            <button class="chapter-btn" data-time="62.5"><span class="chapter-time">1:02</span>Alt goal propagation</button>
+            <button class="chapter-btn" data-time="88.5"><span class="chapter-time">1:28</span>Alt goal run</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <video controls playsinline preload="none" poster="./static/images/poster_scene_b.jpg">
+          <source src="./static/videos/scene_b_1080p.mp4" type="video/mp4">
+        </video>
+        <div class="video-meta">
+          <span class="video-tag">Scene B</span>
+          <h4>Goal: plant, alternate goal: refrigerator cabinet</h4>
+          <div class="video-chapters">
+            <button class="chapter-btn" data-time="0"><span class="chapter-time">0:00</span>Mapping</button>
+            <button class="chapter-btn" data-time="6.5"><span class="chapter-time">0:06</span>Goal</button>
+            <button class="chapter-btn" data-time="11.5"><span class="chapter-time">0:11</span>Mapping and planning</button>
+            <button class="chapter-btn" data-time="44.5"><span class="chapter-time">0:44</span>Localization and planning</button>
+            <button class="chapter-btn" data-time="56.5"><span class="chapter-time">0:56</span>Alt goal</button>
+            <button class="chapter-btn" data-time="62"><span class="chapter-time">1:02</span>Alt goal propagation</button>
+            <button class="chapter-btn" data-time="90.5"><span class="chapter-time">1:30</span>Alt goal run</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -213,20 +272,19 @@
       <div class="column">
         <div class="content has-text-justified" style="max-width: 880px; margin: 0 auto 1.25rem;">
           <p>
-            Blue regions are cheap because they sit on navigable space; red regions become expensive when
-            the robot must route around walls, furniture, or missing connectivity. The cost is geodesic
-            rather than Euclidean image distance, so it reflects what the robot can actually reach. When
-            the goal is outside the room, the near side of the wall correctly receives a high cost in both
-            the ground-truth and Plann3r costmaps, whereas a 3D-Euclidean baseline assigns it a low cost
-            and ObjectReact misses the gradient.
+            Recent 3D mapping methods do not directly tell whether a place can be reached. That needs
+            reasoning about traversable regions in a geodesic space, not a Euclidean one. Plann3r gives
+            each pixel the geodesic distance from its closest floor point to the subgoal.
           </p>
         </div>
         <div class="figure-card">
           <img src="./static/images/costmap_qual.png"
                alt="Qualitative comparison of planning costmaps: Ground Truth, Plann3r, Euclidean, ObjectReact.">
           <p class="figure-caption">
-            Qualitative comparison of planning costmaps. The goal lies outside the room. Plann3r
-            reproduces the ground-truth geodesic structure; 3D-Euclidean distance and ObjectReact do not.
+            The goal is outside the room and we observe that the side of the wall inside the room gets a
+            high cost (shades of red) in both the Ground Truth and Plann3r generated costmaps, whereas the
+            same wall either gets a low cost (shades of blue) when directly using 3D Euclidean distances or
+            misses a cost gradient in ObjectReact.
           </p>
         </div>
       </div>
@@ -241,7 +299,8 @@
     <h2 class="title is-3 has-text-centered">Demo</h2>
     <p class="subtitle is-6 has-text-centered" style="color:#5a6573; max-width: 760px; margin: 0 auto 1.5rem;">
       Pick a scene and goal, then scrub the traverse to see Plann3r's predicted geodesic costmap per
-      frame. Blue is cheap to reach the goal, red is expensive. We also ran the same model on Sekiro, video game it never saw during training, with no fine-tuning, which shows the planner generalizes beyond its indoor training scenes.
+      frame. Blue is a low cost to the goal and red is a high cost. The second scene is from the video
+      game Sekiro, which the model never saw in training, run with no fine-tuning.
     </p>
 
     <div class="columns is-centered">
@@ -289,8 +348,8 @@
         <p class="table-note" style="text-align:center;">
           Each goal is a pixel selected in one reference frame (white-and-red marker). The costmaps come
           straight from Plann3r's offline propagation pass over this scene. Global normalizes color across
-          the whole traverse (absolute cost to goal); relative normalizes each frame on its own, which
-          brings out local structure even far from the goal.
+          the whole traverse, so it shows the absolute cost to the goal. Relative normalizes each frame on
+          its own, which shows local structure even far from the goal.
         </p>
       </div>
     </div>
@@ -303,7 +362,7 @@
     <p class="section-eyebrow has-text-centered">Demonstrations</p>
     <h2 class="title is-3 has-text-centered">Mapping and execution in action</h2>
     <p class="subtitle is-6 has-text-centered" style="color:#5a6573; margin-bottom: 1.75rem;">
-      Real recordings from the VGGT-Nav pipeline.
+      Real-world recordings of the VGGT-Nav pipeline.
     </p>
 
     <div class="video-grid">
@@ -315,7 +374,7 @@
         <div class="video-meta">
           <span class="video-tag">Offline mapping</span>
           <h4>Mapping to an alternate goal</h4>
-          <p>Costs propagate through overlapping local submaps; the global cost field follows the floor plan instead of cutting through obstacles.</p>
+          <p>Costs propagate from the alternate goal through overlapping local submaps of the traverse.</p>
         </div>
       </div>
 
@@ -327,7 +386,7 @@
         <div class="video-meta">
           <span class="video-tag">Execution view</span>
           <h4>Query, submap, costmap, and rollout</h4>
-          <p>The live query, retrieved submap, and predicted costmap run alongside the real-world robot rollout toward the alternate goal.</p>
+          <p>The query image, retrieved submap, predicted costmap and controller waypoints, beside the robot's run to the alternate goal.</p>
         </div>
       </div>
 
@@ -339,7 +398,7 @@
         <div class="video-meta">
           <span class="video-tag">Offline mapping</span>
           <h4>Mapping to the final goal</h4>
-          <p>The same functional-map representation transfers to a different target with no change to the module.</p>
+          <p>The same traverse, with costs propagated from the final goal.</p>
         </div>
       </div>
 
@@ -351,7 +410,7 @@
         <div class="video-meta">
           <span class="video-tag">Real-world rollout</span>
           <h4>Reaching the alternate goal</h4>
-          <p>Closed-loop, cost-conditioned waypoints drive the physical robot to the alternate goal.</p>
+          <p>The robot follows the controller's waypoints in closed loop to the alternate goal.</p>
         </div>
       </div>
     </div>
@@ -426,7 +485,7 @@
                 <td class="group-sep">33.36</td><td>44.71</td>
               </tr>
               <tr class="row-ours rule-top">
-                <td>GT Costs + Control (Ours)</td>
+                <td>Plann3r + GT-trained Control (Ours)</td>
                 <td>61.30</td><td>75.53</td>
                 <td class="group-sep">58.88</td><td>69.42</td>
                 <td class="group-sep">45.36</td><td>61.10</td>
@@ -445,11 +504,10 @@
           </table>
         </div>
         <p class="table-note">
-          State-of-the-art comparison on four navigation tasks (HM3D / IIN-val). We report SPL and
-          Soft-SPL. Boldface marks the best score per column; the two shaded rows are ours. Plann3r
-          conditions control on dense predicted geodesic costmaps and reaches the best average SPL and
-          SSPL, along with the best scores on Alt Goal and Shortcut. The GT-cost ablation shows that most
-          of the remaining gap is in control and subgoal selection rather than cost prediction.
+          State-of-the-art comparison on four navigation tasks of the IIN-val benchmark (HM3D), in SPL and
+          Soft-SPL (SSPL). Best scores in bold, and the shaded rows are ours. GT-trained Control denotes a
+          controller trained on simulator ground-truth (GT) costmaps but deployed with Plann3r-predicted
+          costmaps.
         </p>
       </div>
     </div>
@@ -490,9 +548,11 @@
           </table>
         </div>
         <p class="table-note">
-          Mean Absolute Rank Difference (MARD) between ground-truth and predicted costs (lower is better).
-          Euclidean distance is most accurate only in the immediate low-cost region around the subgoal;
-          Plann3r is consistently better once reasoning extends beyond nearby space.
+          Mean Absolute Rank Difference (MARD) between ground truth and predicted costs (sweeping over
+          min-k% cost pixels or k-based bins). Lower is better. Left: cumulative MARD over all pixels below
+          the given cost threshold. Right: MARD restricted to pixels within each cost bin. Euclidean
+          distance is more accurate in the lowest 5% of costs around the subgoal, and Plann3r has the
+          lowest error at every other threshold and bin.
         </p>
       </div>
     </div>
@@ -505,8 +565,8 @@
                alt="Qualitative overview of the navigation pipeline: submap and query costmaps, subgoal/goal pixels, predicted waypoints, and a top-down view.">
           <p class="figure-caption">
             Qualitative overview of the navigation pipeline. The query costmaps remain geodesically
-            consistent with the submap costmaps and correctly direct the robot at both timesteps,
-            regardless of whether the final goal is visible in the current image.
+            consistent with the submap costmaps and correctly direct the robot at both the timesteps,
+            regardless of the visibility of the final goal in the current image at timestep t1.
           </p>
         </div>
       </div>

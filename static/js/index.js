@@ -43,6 +43,30 @@
     });
   }
 
+  // Chapter buttons seek their card's video and mark the chapter being played.
+  document.querySelectorAll(".video-chapters").forEach(function (chapters) {
+    var card = chapters.closest(".video-card");
+    var video = card && card.querySelector("video");
+    if (!video) return;
+    var buttons = Array.prototype.slice.call(chapters.querySelectorAll(".chapter-btn"));
+    buttons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        video.currentTime = parseFloat(btn.dataset.time);
+        var p = video.play();
+        if (p && p.catch) p.catch(function () {});
+      });
+    });
+    video.addEventListener("timeupdate", function () {
+      var current = null;
+      buttons.forEach(function (btn) {
+        if (video.currentTime >= parseFloat(btn.dataset.time)) current = btn;
+      });
+      buttons.forEach(function (btn) {
+        btn.classList.toggle("is-active", btn === current);
+      });
+    });
+  });
+
   // Copy-to-clipboard for the BibTeX block.
   var copyBtn = document.getElementById("copy-bibtex");
   if (copyBtn) {
