@@ -115,6 +115,59 @@
   </div>
 </section>
 
+<!-- ============================ ANIMATIONS ============================ -->
+<section class="section" id="animations" style="padding-top: 0;">
+  <div class="container is-max-desktop">
+    <p class="section-eyebrow has-text-centered">Walkthrough</p>
+    <h2 class="title is-3 has-text-centered">VGGT-Nav, step by step</h2>
+    <p class="subtitle is-6 has-text-centered" style="color:#5a6573; max-width: 760px; margin: 0 auto 1.5rem;">
+      Two HM3D validation episodes, rendered from the logged runs. Poses, images, costmaps and paths
+      come from the logs. The 3D mesh is only for visualization, since Plann3r works on the
+      reference images in a sliding window.
+    </p>
+
+    <div class="video-grid" style="grid-template-columns: 1fr;">
+      <div class="video-card">
+        <video controls playsinline preload="none" poster="./static/images/poster_scene_a.jpg">
+          <source src="./static/videos/scene_a_1080p.mp4" type="video/mp4">
+        </video>
+        <div class="video-meta">
+          <span class="video-tag">Scene A</span>
+          <h4>Goal: chair, alternate goal: refrigerator</h4>
+          <div class="video-chapters">
+            <button class="chapter-btn" data-time="0"><span class="chapter-time">0:00</span>Mapping</button>
+            <button class="chapter-btn" data-time="6.5"><span class="chapter-time">0:06</span>Goal</button>
+            <button class="chapter-btn" data-time="11.5"><span class="chapter-time">0:11</span>Mapping and planning</button>
+            <button class="chapter-btn" data-time="43"><span class="chapter-time">0:43</span>Localization and planning</button>
+            <button class="chapter-btn" data-time="57.5"><span class="chapter-time">0:57</span>Alt goal</button>
+            <button class="chapter-btn" data-time="62.5"><span class="chapter-time">1:02</span>Alt goal propagation</button>
+            <button class="chapter-btn" data-time="88.5"><span class="chapter-time">1:28</span>Alt goal run</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <video controls playsinline preload="none" poster="./static/images/poster_scene_b.jpg">
+          <source src="./static/videos/scene_b_1080p.mp4" type="video/mp4">
+        </video>
+        <div class="video-meta">
+          <span class="video-tag">Scene B</span>
+          <h4>Goal: plant, alternate goal: refrigerator cabinet</h4>
+          <div class="video-chapters">
+            <button class="chapter-btn" data-time="0"><span class="chapter-time">0:00</span>Mapping</button>
+            <button class="chapter-btn" data-time="6.5"><span class="chapter-time">0:06</span>Goal</button>
+            <button class="chapter-btn" data-time="11.5"><span class="chapter-time">0:11</span>Mapping and planning</button>
+            <button class="chapter-btn" data-time="44.5"><span class="chapter-time">0:44</span>Localization and planning</button>
+            <button class="chapter-btn" data-time="56.5"><span class="chapter-time">0:56</span>Alt goal</button>
+            <button class="chapter-btn" data-time="62"><span class="chapter-time">1:02</span>Alt goal propagation</button>
+            <button class="chapter-btn" data-time="90.5"><span class="chapter-time">1:30</span>Alt goal run</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============================ CONTRIBUTIONS ============================ -->
 <section class="section" style="padding-top: 0;">
   <div class="container is-max-desktop">
@@ -205,59 +258,6 @@
           controller with the architecture and training of ObjectReact turns the query costmap into 5
           future waypoints in the local BEV space.
         </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================ ANIMATIONS ============================ -->
-<section class="section" id="animations" style="padding-top: 0;">
-  <div class="container is-max-desktop">
-    <p class="section-eyebrow has-text-centered">Walkthrough</p>
-    <h2 class="title is-3 has-text-centered">VGGT-Nav, step by step</h2>
-    <p class="subtitle is-6 has-text-centered" style="color:#5a6573; max-width: 760px; margin: 0 auto 1.5rem;">
-      Two HM3D validation episodes, rendered from the logged runs. Poses, images, costmaps and paths
-      come from the logs. The 3D mesh is only for visualization, since Plann3r works on the
-      reference images in a sliding window.
-    </p>
-
-    <div class="video-grid" style="grid-template-columns: 1fr;">
-      <div class="video-card">
-        <video controls playsinline preload="none" poster="./static/images/poster_scene_a.jpg">
-          <source src="./static/videos/scene_a_1080p.mp4" type="video/mp4">
-        </video>
-        <div class="video-meta">
-          <span class="video-tag">Scene A</span>
-          <h4>Goal: chair, alternate goal: refrigerator</h4>
-          <div class="video-chapters">
-            <button class="chapter-btn" data-time="0"><span class="chapter-time">0:00</span>Mapping</button>
-            <button class="chapter-btn" data-time="6.5"><span class="chapter-time">0:06</span>Goal</button>
-            <button class="chapter-btn" data-time="11.5"><span class="chapter-time">0:11</span>Mapping and planning</button>
-            <button class="chapter-btn" data-time="43"><span class="chapter-time">0:43</span>Localization and planning</button>
-            <button class="chapter-btn" data-time="57.5"><span class="chapter-time">0:57</span>Alt goal</button>
-            <button class="chapter-btn" data-time="62.5"><span class="chapter-time">1:02</span>Alt goal propagation</button>
-            <button class="chapter-btn" data-time="88.5"><span class="chapter-time">1:28</span>Alt goal run</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="video-card">
-        <video controls playsinline preload="none" poster="./static/images/poster_scene_b.jpg">
-          <source src="./static/videos/scene_b_1080p.mp4" type="video/mp4">
-        </video>
-        <div class="video-meta">
-          <span class="video-tag">Scene B</span>
-          <h4>Goal: plant, alternate goal: refrigerator cabinet</h4>
-          <div class="video-chapters">
-            <button class="chapter-btn" data-time="0"><span class="chapter-time">0:00</span>Mapping</button>
-            <button class="chapter-btn" data-time="6.5"><span class="chapter-time">0:06</span>Goal</button>
-            <button class="chapter-btn" data-time="11.5"><span class="chapter-time">0:11</span>Mapping and planning</button>
-            <button class="chapter-btn" data-time="44.5"><span class="chapter-time">0:44</span>Localization and planning</button>
-            <button class="chapter-btn" data-time="56.5"><span class="chapter-time">0:56</span>Alt goal</button>
-            <button class="chapter-btn" data-time="62"><span class="chapter-time">1:02</span>Alt goal propagation</button>
-            <button class="chapter-btn" data-time="90.5"><span class="chapter-time">1:30</span>Alt goal run</button>
-          </div>
-        </div>
       </div>
     </div>
   </div>
